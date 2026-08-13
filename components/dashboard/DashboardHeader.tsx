@@ -32,7 +32,6 @@ export default function DashboardHeader() {
     <NewEventModal
         onClose={() => setShowEventModal(false)}
         onSuccess={() => {
-        console.log("Evento criado!");
         }}
     />
     )}

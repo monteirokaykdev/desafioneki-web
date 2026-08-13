@@ -47,6 +47,7 @@ export default function AuthForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const router = useRouter();
 
@@ -93,8 +94,13 @@ export default function AuthForm() {
 
         console.log("Cadastro realizado:", response.data);
 
-        // Depois do cadastro, volta para login
-        setIsLoginMode(true);
+        setSuccessMessage("Cadastro realizado com sucesso!");
+
+
+        setTimeout(() => {
+          setSuccessMessage("");
+          setIsLoginMode(true);
+        }, 3000);
       }
     } catch (error) {
       console.error(
@@ -107,8 +113,8 @@ export default function AuthForm() {
   };
 
   return (
-  <div
-    className="flex min-h-screen items-center justify-center px-4"
+    <div
+      className="flex min-h-screen items-center justify-center px-4"
       style={{
         background: `
           radial-gradient(circle at 0% 0%, #93c5fd 0%, transparent 42%),
@@ -119,24 +125,24 @@ export default function AuthForm() {
         `,
       }}
     >
-    <div className="w-full max-w-md rounded-2xl bg-white px-8 py-9 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl bg-white px-8 py-9 shadow-xl">
 
         {/* Título */}
-      <div className="mb-6 text-center">
-        <div className="mb-3 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-400 text-white shadow-md">
-            <CalendarDays size={26} strokeWidth={2} />
+        <div className="mb-6 text-center">
+          <div className="mb-3 flex justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-400 text-white shadow-md">
+              <CalendarDays size={26} strokeWidth={2} />
+            </div>
           </div>
+
+          <h1 className="text-3xl font-bold text-gray-900">
+            EVENTHUB
+          </h1>
+
+          <p className="text-lg text-gray-600">
+            Gerencie seus eventos em um só lugar
+          </p>
         </div>
-
-        <h1 className="text-3xl font-bold text-gray-900">
-          EVENTHUB
-        </h1>
-
-        <p className="text-lg text-gray-600">
-          Gerencie seus eventos em um só lugar
-        </p>
-      </div>
 
         {/* Toggle Login / Cadastro */}
         <div className="relative mb-8 flex h-12 overflow-hidden rounded-full border border-gray-200">
@@ -152,7 +158,10 @@ export default function AuthForm() {
 
           <button
             type="button"
-            onClick={() => setIsLoginMode(true)}
+            onClick={() => {
+              setIsLoginMode(true);
+              setSuccessMessage("");
+            }}
             className={`relative z-10 w-1/2 font-medium transition-colors duration-300 ${
               isLoginMode
                 ? "text-white"
@@ -164,7 +173,10 @@ export default function AuthForm() {
 
           <button
             type="button"
-            onClick={() => setIsLoginMode(false)}
+            onClick={() => {
+              setIsLoginMode(false);
+              setSuccessMessage("");
+            }}
             className={`relative z-10 w-1/2 font-medium transition-colors duration-300 ${
               !isLoginMode
                 ? "text-white"
@@ -173,8 +185,13 @@ export default function AuthForm() {
           >
             Cadastro
           </button>
-
         </div>
+
+        {successMessage && (
+          <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-600">
+            {successMessage}
+          </div>
+        )}
 
         {/* Formulário */}
         <form
@@ -182,7 +199,6 @@ export default function AuthForm() {
           className="space-y-6"
         >
 
-          {/* Nome - apenas cadastro */}
           {!isLoginMode && (
             <div>
               <input
@@ -229,7 +245,6 @@ export default function AuthForm() {
           {/* Senha */}
           <div>
             <div className="relative">
-
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -260,7 +275,6 @@ export default function AuthForm() {
                   <Eye size={19} />
                 )}
               </button>
-
             </div>
 
             {errors.password && (
@@ -274,7 +288,6 @@ export default function AuthForm() {
           {!isLoginMode && (
             <div>
               <div className="relative">
-
                 <input
                   id="confirmPassword"
                   type={
@@ -311,7 +324,6 @@ export default function AuthForm() {
                     <Eye size={19} />
                   )}
                 </button>
-
               </div>
 
               {errors.confirmPassword && (
@@ -325,9 +337,7 @@ export default function AuthForm() {
           {/* Lembrar / Esqueci senha */}
           {isLoginMode && (
             <div className="flex items-center justify-between px-3">
-
               <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-500">
-
                 <input
                   type="checkbox"
                   {...register("remember")}
@@ -335,7 +345,6 @@ export default function AuthForm() {
                 />
 
                 Lembrar de mim
-
               </label>
 
               <button
@@ -345,7 +354,6 @@ export default function AuthForm() {
               >
                 Esqueci minha senha
               </button>
-
             </div>
           )}
 
@@ -363,19 +371,20 @@ export default function AuthForm() {
                 ? "Entrar"
                 : "Criar conta"}
           </button>
-
         </form>
 
         {/* Rodapé */}
         <div className="mt-6 text-center text-sm text-gray-500">
-
           {isLoginMode ? (
             <>
               Ainda não possui uma conta?{" "}
 
               <button
                 type="button"
-                onClick={() => setIsLoginMode(false)}
+                onClick={() => {
+                  setIsLoginMode(false);
+                  setSuccessMessage("");
+                }}
                 className="font-medium text-cyan-600 transition hover:text-cyan-700"
               >
                 Cadastre-se
@@ -387,18 +396,20 @@ export default function AuthForm() {
 
               <button
                 type="button"
-                onClick={() => setIsLoginMode(true)}
+                onClick={() => {
+                  setIsLoginMode(true);
+                  setSuccessMessage("");
+                }}
                 className="font-medium text-cyan-600 transition hover:text-cyan-700"
               >
                 Fazer login
               </button>
             </>
           )}
-
         </div>
-
       </div>
-       {showEmailModal && (
+
+      {showEmailModal && (
         <EmailModal
           onClose={() => setShowEmailModal(false)}
         />
